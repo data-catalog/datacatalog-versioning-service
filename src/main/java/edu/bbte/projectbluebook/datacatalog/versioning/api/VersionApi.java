@@ -109,7 +109,7 @@ public interface VersionApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
+                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
@@ -139,7 +139,7 @@ public interface VersionApi {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
+                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

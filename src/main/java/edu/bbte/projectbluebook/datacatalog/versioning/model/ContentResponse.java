@@ -19,9 +19,6 @@ import javax.validation.constraints.*;
 public class ContentResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  @JsonProperty("id")
-  private String id;
-
   @JsonProperty("name")
   private String name;
 
@@ -30,28 +27,7 @@ public class ContentResponse  implements Serializable {
   private OffsetDateTime lastModified;
 
   @JsonProperty("size")
-  private Integer size;
-
-  public ContentResponse id(String id) {
-    this.id = id;
-    return this;
-  }
-
-  /**
-   * The unique identifier of the content.
-   * @return id
-  */
-  @ApiModelProperty(required = true, value = "The unique identifier of the content.")
-  @NotNull
-
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
+  private Long size;
 
   public ContentResponse name(String name) {
     this.name = name;
@@ -96,7 +72,7 @@ public class ContentResponse  implements Serializable {
     this.lastModified = lastModified;
   }
 
-  public ContentResponse size(Integer size) {
+  public ContentResponse size(Long size) {
     this.size = size;
     return this;
   }
@@ -108,12 +84,12 @@ public class ContentResponse  implements Serializable {
   */
   @ApiModelProperty(example = "176", value = "The size of the blob in bytes.")
 
-@Min(0)
-  public Integer getSize() {
+@Min(0L)
+  public Long getSize() {
     return size;
   }
 
-  public void setSize(Integer size) {
+  public void setSize(Long size) {
     this.size = size;
   }
 
@@ -127,15 +103,14 @@ public class ContentResponse  implements Serializable {
       return false;
     }
     ContentResponse contentResponse = (ContentResponse) o;
-    return Objects.equals(this.id, contentResponse.id) &&
-        Objects.equals(this.name, contentResponse.name) &&
+    return Objects.equals(this.name, contentResponse.name) &&
         Objects.equals(this.lastModified, contentResponse.lastModified) &&
         Objects.equals(this.size, contentResponse.size);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, lastModified, size);
+    return Objects.hash(name, lastModified, size);
   }
 
   @Override
@@ -143,7 +118,6 @@ public class ContentResponse  implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContentResponse {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    lastModified: ").append(toIndentedString(lastModified)).append("\n");
     sb.append("    size: ").append(toIndentedString(size)).append("\n");

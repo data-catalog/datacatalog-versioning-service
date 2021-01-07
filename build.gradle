@@ -35,6 +35,8 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
 	testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.6.28'
 	compile group: 'org.jacoco', name: 'org.jacoco.core', version: '0.8.6'
+	compile group: 'com.azure', name: 'azure-storage-blob', version: '12.9.0'
+
 }
 
 jacoco {
