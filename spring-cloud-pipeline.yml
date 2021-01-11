@@ -20,7 +20,7 @@ steps:
       jdkArchitectureOption: "x64"
       publishJUnitResults: true
       testResultsFiles: "**/TEST-*.xml"
-      tasks: "assemble"
+      tasks: "bootJar"
 
 
   - task: AzureCLI@1
