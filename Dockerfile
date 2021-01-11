@@ -1,6 +1,6 @@
 FROM gradle:6.6.1-jdk11-hotspot AS stage1
 COPY --chown=gradle:gradle . /usr/data-catalog-versioning-service
-WORKDIR /usr/datacatalog
+WORKDIR /usr/data-catalog-versioning-service
 RUN gradle bootJar
 
 FROM openjdk:11-slim
