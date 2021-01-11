@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'jacoco'
 	id 'war'
+	id "org.openapi.generator" version "4.3.1"
 }
 
 group = 'edu.bbte.projectbluebook.datacatalog'
@@ -49,4 +50,16 @@ test {
 
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
+}
+
+openApiGenerate {
+	inputSpec = "$rootDir/src/main/resources/api/VersioningApi.yaml".toString()
+	configFile = "$rootDir/openapi-generator-config.json".toString()
+	ignoreFileOverride = "$rootDir/.openapi-generator-ignore".toString()
+	outputDir = "$rootDir".toString()
+	generatorName = "spring"
+	validateSpec = false
+	configOptions = [
+			hideGenerationTimestamp: "true"
+	]
 }
