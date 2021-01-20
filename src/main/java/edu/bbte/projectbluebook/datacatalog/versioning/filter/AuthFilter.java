@@ -2,6 +2,7 @@ package edu.bbte.projectbluebook.datacatalog.versioning.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.TokenInfoResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,13 @@ import java.util.Locale;
 @Component
 @PropertySource("classpath:application.properties")
 public class AuthFilter implements Filter {
+
+    private static String userhandlingEndpoint;
+
+    @Value("${uhs.endpoint}")
+    public void setUserhandlingEndpoint(String userhandlingEndpointProperty) {
+        userhandlingEndpoint = userhandlingEndpointProperty;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -97,7 +105,7 @@ public class AuthFilter implements Filter {
 
     private static TokenInfoResponse getTokenInfo(String token) throws IOException {
 
-        URL url = new URL("http://datacatalogregistryuserhandletest.azurewebsites.net/token_info");
+        URL url = new URL(userhandlingEndpoint + "/token_info");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-type", "application/json");
