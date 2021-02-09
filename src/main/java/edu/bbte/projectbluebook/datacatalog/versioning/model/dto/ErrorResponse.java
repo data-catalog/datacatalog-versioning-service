@@ -1,4 +1,4 @@
-package edu.bbte.projectbluebook.datacatalog.versioning.model;
+package edu.bbte.projectbluebook.datacatalog.versioning.model.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;

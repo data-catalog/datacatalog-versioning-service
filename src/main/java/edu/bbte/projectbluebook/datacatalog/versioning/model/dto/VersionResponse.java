@@ -1,9 +1,9 @@
-package edu.bbte.projectbluebook.datacatalog.versioning.model;
+package edu.bbte.projectbluebook.datacatalog.versioning.model.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.ContentResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.ContentResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;

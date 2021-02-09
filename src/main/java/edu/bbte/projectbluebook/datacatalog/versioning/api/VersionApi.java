@@ -5,9 +5,9 @@
  */
 package edu.bbte.projectbluebook.datacatalog.versioning.api;
 
-import edu.bbte.projectbluebook.datacatalog.versioning.model.ErrorResponse;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.VersionRequest;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.VersionResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.ErrorResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionRequest;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -33,10 +35,6 @@ import java.util.Optional;
 @Validated
 @Api(value = "Version", description = "the Version API")
 public interface VersionApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     /**
      * POST /assets/{assetId}/versions
@@ -59,8 +57,10 @@ public interface VersionApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Void> createAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) VersionRequest versionRequest) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    default Mono<ResponseEntity<Void>> createAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<VersionRequest> versionRequest, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        return result.then(Mono.empty());
 
     }
 
@@ -83,8 +83,10 @@ public interface VersionApi {
     @RequestMapping(value = "/assets/{assetId}/versions/{name}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    default Mono<ResponseEntity<Void>> deleteAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        return result.then(Mono.empty());
 
     }
 
@@ -105,17 +107,17 @@ public interface VersionApi {
     @RequestMapping(value = "/assets/{assetId}/versions/{name}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<VersionResponse> getAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
+    default Mono<ResponseEntity<VersionResponse>> getAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        for (MediaType mediaType : exchange.getRequest().getHeaders().getAccept()) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
+                result = ApiUtil.getExampleResponse(exchange, exampleString);
+                break;
             }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
+        return result.then(Mono.empty());
 
     }
 
@@ -135,17 +137,17 @@ public interface VersionApi {
     @RequestMapping(value = "/assets/{assetId}/versions",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<VersionResponse>> getAssetVersions(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
+    default Mono<ResponseEntity<Flux<VersionResponse>>> getAssetVersions(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        for (MediaType mediaType : exchange.getRequest().getHeaders().getAccept()) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
+                result = ApiUtil.getExampleResponse(exchange, exampleString);
+                break;
             }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
+        return result.then(Mono.empty());
 
     }
 
