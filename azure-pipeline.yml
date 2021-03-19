@@ -1,4 +1,5 @@
 trigger:
+  - "develop"
   - "master"
 variables:
   buildConfiguration: "Release"
@@ -17,8 +18,9 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         steps:
-         
+
           - task: Gradle@2
+            displayName: "Rung Gradle Check"
             inputs:
               workingDirectory: ""
               gradleWrapperFile: "gradlew"
@@ -28,7 +30,7 @@ stages:
               jdkArchitectureOption: "x64"
               publishJUnitResults: true
               testResultsFiles: "**/TEST-*.xml"
-              tasks: "assemble"
+              tasks: "check"
           - task: Docker@1
             displayName: "Build Container Image"
             inputs:
@@ -66,7 +68,7 @@ stages:
             artifact: app
 
             # Create or update Azure App Service
- 
+
           # Deploy App Service
           - task: AzureRmWebAppDeployment@3
             displayName: "Deploy Azure App Service"

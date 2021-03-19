@@ -10,6 +10,8 @@ plugins {
 group = 'edu.bbte.projectbluebook.datacatalog'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+targetCompatibility = '11'
+
 
 repositories {
 	mavenCentral()
@@ -25,11 +27,6 @@ dependencies {
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb-reactive', version: '2.4.2'
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.4.2'
 	annotationProcessor group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.4.2'
-
-
-
-	// MongoDB driver
-	// compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.7'
 
 	// Model and mapper dependencies
 	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.16'

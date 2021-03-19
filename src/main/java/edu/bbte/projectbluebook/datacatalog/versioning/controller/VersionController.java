@@ -24,6 +24,7 @@ public class VersionController implements VersionApi {
     @Override
     public Mono<ResponseEntity<Void>> createAssetVersion(String assetId, @Valid Mono<VersionRequest> versionRequest,
                                                          ServerWebExchange exchange) {
+        // FIXME: Location is incorrect
         URI location = UriComponentsBuilder
                 .fromUri(exchange.getRequest().getURI())
                 .path("/{id}")

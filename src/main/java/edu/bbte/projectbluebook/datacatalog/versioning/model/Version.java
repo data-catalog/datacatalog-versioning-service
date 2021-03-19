@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Document
-public class Version extends BaseEntity {
+public class Version extends BaseEntity implements Serializable {
     @Indexed(unique = true)
     private String name;
 

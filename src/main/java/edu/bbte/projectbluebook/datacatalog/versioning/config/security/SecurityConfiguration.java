@@ -44,10 +44,9 @@ public class SecurityConfiguration {
                 .logout().disable()
                 .httpBasic().disable()
                 .authorizeExchange()
-                .pathMatchers(HttpMethod.GET, "/assets/{assetId}/versions").permitAll()
                 .pathMatchers(HttpMethod.POST, "/assets/{assetId}/versions").access(this::isOwnerOrAdmin)
-                .pathMatchers(HttpMethod.GET, "/assets/{assetId}/versions/*").permitAll()
                 .pathMatchers(HttpMethod.DELETE, "/assets/{assetId}/versions/*").access(this::isOwnerOrAdmin)
+                .pathMatchers(HttpMethod.GET, "/assets/{assetId}/versions/**").permitAll()
                 .pathMatchers("/assets/*/versions").permitAll()
                 .anyExchange().authenticated()
                 .and()
@@ -65,6 +64,7 @@ public class SecurityConfiguration {
 
         return assetOwnerId.zipWith(principal)
                 .map(tuple -> tuple.getT1().equals(tuple.getT2()))
+                .defaultIfEmpty(false)
                 .map(AuthorizationDecision::new);
     }
 
@@ -73,6 +73,7 @@ public class SecurityConfiguration {
                 .map(Authentication::getAuthorities)
                 .map(authorities -> authorities.stream()
                         .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")))
+                .defaultIfEmpty(false)
                 .map(AuthorizationDecision::new);
     }
 

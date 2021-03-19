@@ -1,6 +1,6 @@
 package edu.bbte.projectbluebook.datacatalog.versioning.service;
 
-import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import edu.bbte.projectbluebook.datacatalog.versioning.client.AssetServiceClient;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,8 +42,9 @@ public class VersionService {
                 .flatMap(version -> fillVersionContent(version, assetId))
                 .flatMap(version -> repository.insert(version))
                 .then()
+                .doOnError(err -> err.printStackTrace())
                 .onErrorMap(err -> !(err instanceof NotFoundException),
-                        err -> new VersionServiceException("Asset version could not be created."));
+                        err -> new VersionServiceException("Asset version could not be created: " + err.getMessage()));
     }
 
     private Mono<Version> fillVersionContent(Version version, String assetId) {
@@ -64,19 +64,16 @@ public class VersionService {
                 .getParameters().stream()
                 .collect(Collectors.toMap(ParameterResponse::getKey, ParameterResponse::getValue));
 
-        BlobContainerClient container = new BlobContainerClientBuilder()
+        BlobContainerAsyncClient container = new BlobContainerClientBuilder()
                 .endpoint(parameters.get("accountUrl"))
                 .sasToken(parameters.get("sasToken"))
                 .containerName(parameters.get("containerName"))
-                .buildClient();
+                .buildAsyncClient();
 
-        ArrayList<Content> contents = container
+        return container
                 .listBlobs()
-                .stream()
                 .map(this::blobToContent)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        return Mono.just(contents);
+                .collectList();
     }
 
     private Content blobToContent(BlobItem blob) {

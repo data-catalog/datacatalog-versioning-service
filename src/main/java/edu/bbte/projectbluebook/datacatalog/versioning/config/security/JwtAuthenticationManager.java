@@ -29,7 +29,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
                 .map(response -> new UsernamePasswordAuthenticationToken(
                         response.getUserId(),
                         authentication.getCredentials(),
-                        createAuthorities(response.getRole())))
+                        createAuthorities(response.getRole().toString())))
                 .cast(Authentication.class);
     }
 
