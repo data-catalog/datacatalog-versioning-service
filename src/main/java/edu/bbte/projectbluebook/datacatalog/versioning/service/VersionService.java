@@ -42,7 +42,6 @@ public class VersionService {
                 .flatMap(version -> fillVersionContent(version, assetId))
                 .flatMap(version -> repository.insert(version))
                 .then()
-                .doOnError(err -> err.printStackTrace())
                 .onErrorMap(err -> !(err instanceof NotFoundException),
                         err -> new VersionServiceException("Asset version could not be created: " + err.getMessage()));
     }
