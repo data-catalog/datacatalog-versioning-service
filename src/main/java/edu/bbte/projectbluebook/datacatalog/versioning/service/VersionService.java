@@ -5,7 +5,6 @@ import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import edu.bbte.projectbluebook.datacatalog.versioning.client.AssetServiceClient;
 import edu.bbte.projectbluebook.datacatalog.versioning.exception.NotFoundException;
-import edu.bbte.projectbluebook.datacatalog.versioning.exception.VersionServiceException;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.Content;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.Version;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.AssetResponse;
@@ -41,9 +40,7 @@ public class VersionService {
                 .map(request -> mapper.requestDtoToModel(request, assetId))
                 .flatMap(version -> fillVersionContent(version, assetId))
                 .flatMap(version -> repository.insert(version))
-                .then()
-                .onErrorMap(err -> !(err instanceof NotFoundException),
-                        err -> new VersionServiceException("Asset version could not be created: " + err.getMessage()));
+                .then();
     }
 
     private Mono<Version> fillVersionContent(Version version, String assetId) {
@@ -86,22 +83,19 @@ public class VersionService {
     }
 
     public Mono<Void> deleteAssetVersion(String assetId, String name) {
-        return repository.deleteByAssetIdAndName(assetId, name)
-                .onErrorMap(err -> new VersionServiceException("Asset could not be deleted."));
+        return repository.deleteByAssetIdAndName(assetId, name);
     }
 
     // TODO: check if asset exists first
     public Mono<VersionResponse> getAssetVersion(String assetId, String name) {
         return repository.findFirstByAssetIdAndName(assetId, name)
                 .map(mapper::modelToResponseDto)
-                .onErrorMap(err -> new VersionServiceException("Asset could not be retrieved."))
                 .switchIfEmpty(Mono.error(new NotFoundException("Version not found.")));
     }
 
     // TODO: check if asset exists first
     public Flux<VersionResponse> getAssetVersions(String assetId) {
         return repository.findAllByAssetId(assetId)
-                .map(mapper::modelToResponseDto)
-                .onErrorMap(err -> new VersionServiceException("Assets could not be retrieved."));
+                .map(mapper::modelToResponseDto);
     }
 }
