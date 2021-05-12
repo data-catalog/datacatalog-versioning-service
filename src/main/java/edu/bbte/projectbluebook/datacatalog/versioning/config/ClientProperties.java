@@ -15,4 +15,7 @@ public class ClientProperties {
 
     @NotEmpty
     private String userServiceUri;
+
+    @NotEmpty
+    private String token;
 }

@@ -5,6 +5,7 @@ import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
 import edu.bbte.projectbluebook.datacatalog.versioning.client.AssetServiceClient;
 import edu.bbte.projectbluebook.datacatalog.versioning.exception.NotFoundException;
+import edu.bbte.projectbluebook.datacatalog.versioning.exception.VersionServiceException;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.Content;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.Version;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.AssetResponse;
@@ -60,16 +61,21 @@ public class VersionService {
                 .getParameters().stream()
                 .collect(Collectors.toMap(ParameterResponse::getKey, ParameterResponse::getValue));
 
-        BlobContainerAsyncClient container = new BlobContainerClientBuilder()
-                .endpoint(parameters.get("accountUrl"))
-                .sasToken(parameters.get("sasToken"))
-                .containerName(parameters.get("containerName"))
-                .buildAsyncClient();
+        try {
+            BlobContainerAsyncClient container = new BlobContainerClientBuilder()
+                    .endpoint(parameters.get("accountUrl"))
+                    .sasToken(parameters.get("sasToken"))
+                    .containerName(parameters.get("containerName"))
+                    .buildAsyncClient();
 
-        return container
-                .listBlobs()
-                .map(this::blobToContent)
-                .collectList();
+            return container
+                    .listBlobs()
+                    .map(this::blobToContent)
+                    .collectList();
+        } catch (IllegalArgumentException e) {
+            throw new VersionServiceException(e.getMessage());
+        }
+
     }
 
     private Content blobToContent(BlobItem blob) {

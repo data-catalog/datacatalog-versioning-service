@@ -2,9 +2,9 @@ package edu.bbte.projectbluebook.datacatalog.versioning.client;
 
 import edu.bbte.projectbluebook.datacatalog.versioning.config.ClientProperties;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.AssetResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -13,15 +13,17 @@ public class AssetServiceClient {
 
     public AssetServiceClient(ClientProperties clientProperties, WebClient.Builder webClientBuilder) {
         final String uri = clientProperties.getAssetServiceUri();
+        final String token = clientProperties.getToken();
 
-        this.webClient = webClientBuilder.baseUrl(uri).build();
+        this.webClient = webClientBuilder.baseUrl(uri).defaultHeader("Authorization", token).build();
     }
 
     public Mono<AssetResponse> fetchAsset(String assetId) {
         return webClient
                 .get().uri("/assets/{id}", assetId)
                 .retrieve()
-                .onStatus(status -> status.equals(HttpStatus.NOT_FOUND), err -> Mono.empty())
-                .bodyToMono(AssetResponse.class);
+                .bodyToMono(AssetResponse.class)
+                .onErrorResume(WebClientResponseException.class,
+                        e -> e.getRawStatusCode() == 404 ? Mono.empty() : Mono.error(e));
     }
 }
