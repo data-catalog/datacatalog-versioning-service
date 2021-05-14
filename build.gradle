@@ -85,3 +85,7 @@ openApiGenerate {
 			hideGenerationTimestamp: "true"
 	]
 }
+
+bootRun {
+	systemProperties = System.properties
+}
