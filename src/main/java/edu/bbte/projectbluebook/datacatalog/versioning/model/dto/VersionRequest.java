@@ -11,9 +11,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Used when sending a request to create a new version.
+ * 
  */
-@ApiModel(description = "Used when sending a request to create a new version.")
+@ApiModel(description = "")
 
 public class VersionRequest  implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -27,10 +27,10 @@ public class VersionRequest  implements Serializable {
   }
 
   /**
-   * The name (or tag) of the version.
+   * The name of the version.
    * @return name
   */
-  @ApiModelProperty(example = "1.0.0", required = true, value = "The name (or tag) of the version.")
+  @ApiModelProperty(required = true, value = "The name of the version.")
   @NotNull
 
 

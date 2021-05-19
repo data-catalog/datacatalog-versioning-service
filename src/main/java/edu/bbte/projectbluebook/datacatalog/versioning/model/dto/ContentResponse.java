@@ -12,9 +12,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Describes the properties of a file in an Azure Blob Container at a specific time.
+ * 
  */
-@ApiModel(description = "Describes the properties of a file in an Azure Blob Container at a specific time.")
+@ApiModel(description = "")
 
 public class ContentResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -38,7 +38,7 @@ public class ContentResponse  implements Serializable {
    * The name of the blob in the container.
    * @return name
   */
-  @ApiModelProperty(example = "users.csv", required = true, value = "The name of the blob in the container.")
+  @ApiModelProperty(required = true, value = "The name of the blob in the container.")
   @NotNull
 
 
@@ -59,7 +59,7 @@ public class ContentResponse  implements Serializable {
    * The date when the blob was last modified.
    * @return lastModified
   */
-  @ApiModelProperty(example = "2020-12-02T12:51:33Z", required = true, value = "The date when the blob was last modified.")
+  @ApiModelProperty(required = true, value = "The date when the blob was last modified.")
   @NotNull
 
   @Valid
@@ -82,7 +82,7 @@ public class ContentResponse  implements Serializable {
    * minimum: 0
    * @return size
   */
-  @ApiModelProperty(example = "176", value = "The size of the blob in bytes.")
+  @ApiModelProperty(example = "0", value = "The size of the blob in bytes.")
 
 @Min(0L)
   public Long getSize() {

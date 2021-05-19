@@ -5,15 +5,14 @@ import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionRequest;
 import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionResponse;
 import edu.bbte.projectbluebook.datacatalog.versioning.service.VersionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 public class VersionController implements VersionApi {
@@ -24,16 +23,9 @@ public class VersionController implements VersionApi {
     @Override
     public Mono<ResponseEntity<Void>> createAssetVersion(String assetId, @Valid Mono<VersionRequest> versionRequest,
                                                          ServerWebExchange exchange) {
-        // FIXME: Location is incorrect
-        URI location = UriComponentsBuilder
-                .fromUri(exchange.getRequest().getURI())
-                .path("/{id}")
-                .buildAndExpand(assetId)
-                .toUri();
-
         return service
                 .createAssetVersion(assetId, versionRequest)
-                .map(nothing -> ResponseEntity.created(location).build());
+                .map(nothing -> ResponseEntity.status(HttpStatus.CREATED).build());
     }
 
     @Override

@@ -20,8 +20,6 @@ public abstract class BaseEntity implements Serializable {
     @CreatedDate
     protected OffsetDateTime createdAt;
 
-
-    // FIXME: updatedAt field is not saved to the DB
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     protected OffsetDateTime updatedAt;

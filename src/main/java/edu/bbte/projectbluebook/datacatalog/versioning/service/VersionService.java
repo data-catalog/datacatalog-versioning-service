@@ -3,6 +3,7 @@ package edu.bbte.projectbluebook.datacatalog.versioning.service;
 import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
+import com.mongodb.DuplicateKeyException;
 import edu.bbte.projectbluebook.datacatalog.versioning.client.AssetServiceClient;
 import edu.bbte.projectbluebook.datacatalog.versioning.exception.NotFoundException;
 import edu.bbte.projectbluebook.datacatalog.versioning.exception.VersionServiceException;
@@ -15,7 +16,9 @@ import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionResponse
 import edu.bbte.projectbluebook.datacatalog.versioning.model.mapper.VersionMapper;
 import edu.bbte.projectbluebook.datacatalog.versioning.repository.VersionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -36,11 +39,13 @@ public class VersionService {
     private AssetServiceClient assetServiceClient;
 
     public Mono<Void> createAssetVersion(String assetId, Mono<VersionRequest> versionRequest) {
-        // TODO: check if version name already exists
         return versionRequest
                 .map(request -> mapper.requestDtoToModel(request, assetId))
                 .flatMap(version -> fillVersionContent(version, assetId))
                 .flatMap(version -> repository.insert(version))
+                .onErrorMap(DuplicateKeyException.class, (e) ->
+                        new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "This version name is already used for the asset."))
                 .then();
     }
 
