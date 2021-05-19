@@ -1,8 +1,8 @@
 package edu.bbte.projectbluebook.datacatalog.versioning.service;
 
-import com.azure.storage.blob.BlobContainerAsyncClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlobItem;
+import com.azure.storage.common.StorageSharedKeyCredential;
 import com.mongodb.DuplicateKeyException;
 import edu.bbte.projectbluebook.datacatalog.versioning.client.AssetServiceClient;
 import edu.bbte.projectbluebook.datacatalog.versioning.exception.NotFoundException;
@@ -66,14 +66,29 @@ public class VersionService {
                 .getParameters().stream()
                 .collect(Collectors.toMap(ParameterResponse::getKey, ParameterResponse::getValue));
 
+        String accountName;
         try {
-            BlobContainerAsyncClient container = new BlobContainerClientBuilder()
-                    .endpoint(parameters.get("accountUrl"))
-                    .sasToken(parameters.get("sasToken"))
-                    .containerName(parameters.get("containerName"))
-                    .buildAsyncClient();
+            accountName = parameters.get("accountUrl").split("\\.")[0].replaceFirst("https?://", "");
+        } catch (IndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The accuont URL is malformed.");
+        }
+        
+        String sasToken = parameters.get("sasToken");
+        String accountKey = parameters.get("accountKey");
 
-            return container
+        try {
+            BlobContainerClientBuilder builder = new BlobContainerClientBuilder()
+                    .endpoint(parameters.get("accountUrl"))
+                    .containerName(parameters.get("containerName"));
+
+            if (sasToken != null) {
+                builder.sasToken(sasToken);
+            }
+            if (accountKey != null) {
+                builder.credential(new StorageSharedKeyCredential(accountName, accountKey));
+            }
+
+            return builder.buildAsyncClient()
                     .listBlobs()
                     .map(this::blobToContent)
                     .collectList();
