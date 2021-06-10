@@ -15,7 +15,7 @@ public class UserServiceClient {
         final String uri = clientProperties.getUserServiceUri();
         final String token = clientProperties.getToken();
 
-        this.webClient = webClientBuilder.baseUrl(uri).defaultHeader("Authorization", token).build();
+        this.webClient = webClientBuilder.baseUrl(uri).defaultHeader("Authorization", "Bearer " + token).build();
     }
 
     public Mono<TokenInfoResponse> getTokenInfo(String token) {
