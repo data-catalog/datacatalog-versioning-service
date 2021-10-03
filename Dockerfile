@@ -1,10 +1,10 @@
 FROM gradle:6.6.1-jdk11-hotspot AS stage1
-COPY --chown=gradle:gradle . /usr/data-catalog-versioning-service
-WORKDIR /usr/datacatalog
+COPY --chown=gradle:gradle . /usr/datacatalog-versioning-service
+WORKDIR /usr/datacatalog-versioning-service
 RUN gradle bootJar
 
 FROM openjdk:11-slim
-COPY --from=stage1 /usr/data-catalog-versioning-service /usr/data-catalog-versioning-service
-CMD java -jar /usr/data-catalog-versioning-service/build/libs/versioning-api-1.0.0-SNAPSHOT.jar
+COPY --from=stage1 /usr/datacatalog-versioning-service /usr/datacatalog-versioning-service
+CMD java -jar /usr/datacatalog-versioning-service/build/libs/datacatalog-versioning-service-0.0.1-SNAPSHOT.jar
 
 EXPOSE 3000

@@ -1,9 +1,9 @@
-package edu.bbte.projectbluebook.datacatalog.versioning.model;
+package edu.bbte.projectbluebook.datacatalog.versioning.model.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.ContentResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.ContentResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.OffsetDateTime;
@@ -15,9 +15,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Describes a specific version of an Asset.  A version is immutable.
+ * VersionResponse
  */
-@ApiModel(description = "Describes a specific version of an Asset.  A version is immutable.")
 
 public class VersionResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -42,10 +41,10 @@ public class VersionResponse  implements Serializable {
   }
 
   /**
-   * The name (or tag) of the version. Unique for an asset.
+   * The name of the version. Unique for an asset.
    * @return name
   */
-  @ApiModelProperty(example = "1.0.0", required = true, value = "The name (or tag) of the version. Unique for an asset.")
+  @ApiModelProperty(required = true, value = "The name of the version. Unique for an asset.")
   @NotNull
 
 
@@ -63,10 +62,10 @@ public class VersionResponse  implements Serializable {
   }
 
   /**
-   * The unique identifier of the asset having this version.
+   * The ID of the asset having this version.
    * @return assetId
   */
-  @ApiModelProperty(required = true, value = "The unique identifier of the asset having this version.")
+  @ApiModelProperty(required = true, value = "The ID of the asset having this version.")
   @NotNull
 
 
@@ -89,10 +88,10 @@ public class VersionResponse  implements Serializable {
   }
 
   /**
-   * The list of contents which are present in this version.
+   * The list of blobs which are present in this version.
    * @return contents
   */
-  @ApiModelProperty(required = true, value = "The list of contents which are present in this version.")
+  @ApiModelProperty(required = true, value = "The list of blobs which are present in this version.")
   @NotNull
 
   @Valid

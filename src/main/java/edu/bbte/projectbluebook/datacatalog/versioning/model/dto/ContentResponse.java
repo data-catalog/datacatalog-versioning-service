@@ -1,4 +1,4 @@
-package edu.bbte.projectbluebook.datacatalog.versioning.model;
+package edu.bbte.projectbluebook.datacatalog.versioning.model.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,15 +12,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Describes the properties of a file in an Azure Blob Container at a specific time.
+ * ContentResponse
  */
-@ApiModel(description = "Describes the properties of a file in an Azure Blob Container at a specific time.")
 
 public class ContentResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  @JsonProperty("id")
-  private String id;
 
   @JsonProperty("name")
   private String name;
@@ -30,28 +26,7 @@ public class ContentResponse  implements Serializable {
   private OffsetDateTime lastModified;
 
   @JsonProperty("size")
-  private Integer size;
-
-  public ContentResponse id(String id) {
-    this.id = id;
-    return this;
-  }
-
-  /**
-   * The unique identifier of the content.
-   * @return id
-  */
-  @ApiModelProperty(required = true, value = "The unique identifier of the content.")
-  @NotNull
-
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
+  private Long size;
 
   public ContentResponse name(String name) {
     this.name = name;
@@ -62,7 +37,7 @@ public class ContentResponse  implements Serializable {
    * The name of the blob in the container.
    * @return name
   */
-  @ApiModelProperty(example = "users.csv", required = true, value = "The name of the blob in the container.")
+  @ApiModelProperty(required = true, value = "The name of the blob in the container.")
   @NotNull
 
 
@@ -83,7 +58,7 @@ public class ContentResponse  implements Serializable {
    * The date when the blob was last modified.
    * @return lastModified
   */
-  @ApiModelProperty(example = "2020-12-02T12:51:33Z", required = true, value = "The date when the blob was last modified.")
+  @ApiModelProperty(required = true, value = "The date when the blob was last modified.")
   @NotNull
 
   @Valid
@@ -96,7 +71,7 @@ public class ContentResponse  implements Serializable {
     this.lastModified = lastModified;
   }
 
-  public ContentResponse size(Integer size) {
+  public ContentResponse size(Long size) {
     this.size = size;
     return this;
   }
@@ -106,14 +81,14 @@ public class ContentResponse  implements Serializable {
    * minimum: 0
    * @return size
   */
-  @ApiModelProperty(example = "176", value = "The size of the blob in bytes.")
+  @ApiModelProperty(example = "0", value = "The size of the blob in bytes.")
 
-@Min(0)
-  public Integer getSize() {
+@Min(0L)
+  public Long getSize() {
     return size;
   }
 
-  public void setSize(Integer size) {
+  public void setSize(Long size) {
     this.size = size;
   }
 
@@ -127,15 +102,14 @@ public class ContentResponse  implements Serializable {
       return false;
     }
     ContentResponse contentResponse = (ContentResponse) o;
-    return Objects.equals(this.id, contentResponse.id) &&
-        Objects.equals(this.name, contentResponse.name) &&
+    return Objects.equals(this.name, contentResponse.name) &&
         Objects.equals(this.lastModified, contentResponse.lastModified) &&
         Objects.equals(this.size, contentResponse.size);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, lastModified, size);
+    return Objects.hash(name, lastModified, size);
   }
 
   @Override
@@ -143,7 +117,6 @@ public class ContentResponse  implements Serializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContentResponse {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    lastModified: ").append(toIndentedString(lastModified)).append("\n");
     sb.append("    size: ").append(toIndentedString(size)).append("\n");

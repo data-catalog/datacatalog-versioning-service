@@ -1,4 +1,4 @@
-package edu.bbte.projectbluebook.datacatalog.versioning.model;
+package edu.bbte.projectbluebook.datacatalog.versioning.model.dto;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,9 +12,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Response model sent by the server when an error occured. 
+ * ErrorResponse
  */
-@ApiModel(description = "Response model sent by the server when an error occured. ")
 
 public class ErrorResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -30,7 +29,7 @@ public class ErrorResponse  implements Serializable {
   private String error;
 
   @JsonProperty("message")
-  private String message;
+  private Object message;
 
   @JsonProperty("path")
   private String path;
@@ -41,10 +40,10 @@ public class ErrorResponse  implements Serializable {
   }
 
   /**
-   * The time of the error response being sent.
+   * The time of the error.
    * @return timestamp
   */
-  @ApiModelProperty(value = "The time of the error response being sent.")
+  @ApiModelProperty(value = "The time of the error.")
 
   @Valid
 
@@ -63,14 +62,12 @@ public class ErrorResponse  implements Serializable {
 
   /**
    * The status code of the response.
-   * minimum: 100
-   * maximum: 599
    * @return status
   */
-  @ApiModelProperty(example = "400", required = true, value = "The status code of the response.")
+  @ApiModelProperty(example = "200", required = true, value = "The status code of the response.")
   @NotNull
 
-@Min(100) @Max(599) 
+
   public Integer getStatus() {
     return status;
   }
@@ -99,23 +96,24 @@ public class ErrorResponse  implements Serializable {
     this.error = error;
   }
 
-  public ErrorResponse message(String message) {
+  public ErrorResponse message(Object message) {
     this.message = message;
     return this;
   }
 
   /**
-   * A description of the error.
+   * An object containing the erros, with the field name as key, and the error cause as value.
    * @return message
   */
-  @ApiModelProperty(value = "A description of the error.")
+  @ApiModelProperty(value = "An object containing the erros, with the field name as key, and the error cause as value.")
 
+  @Valid
 
-  public String getMessage() {
+  public Object getMessage() {
     return message;
   }
 
-  public void setMessage(String message) {
+  public void setMessage(Object message) {
     this.message = message;
   }
 

@@ -5,9 +5,9 @@
  */
 package edu.bbte.projectbluebook.datacatalog.versioning.api;
 
-import edu.bbte.projectbluebook.datacatalog.versioning.model.ErrorResponse;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.VersionRequest;
-import edu.bbte.projectbluebook.datacatalog.versioning.model.VersionResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.ErrorResponse;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionRequest;
+import edu.bbte.projectbluebook.datacatalog.versioning.model.dto.VersionResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -34,21 +36,18 @@ import java.util.Optional;
 @Api(value = "Version", description = "the Version API")
 public interface VersionApi {
 
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
-
     /**
-     * POST /assets/{assetId}/versions
-     * Creates a new version of the asset, with the current content of the asset.  Responds with &#x60;404&#x60; if the asset is not found, and with &#x60;422&#x60; if the request body is invalid.
+     * POST /assets/{assetId}/versions : Create an asset version
+     * Creates a new version of the asset, with the current content of the asset. The version name must be unique for the asset.  Requires access rights to the asset itself, to be able to create a new version.  Possible response codes: - &#x60;404&#x60;: The asset was not found. - &#x60;422&#x60;: The HTTP request body is invalid. Detailed explanation can be found in the response body. - &#x60;201&#x60;: The version was created successfully.
      *
-     * @param assetId The unique identifier of the asset. (required)
+     * @param assetId The ID of the asset. (required)
      * @param versionRequest  (optional)
      * @return Created (status code 201)
      *         or Not Found (status code 404)
      *         or Unprocessable Entity (WebDAV) (status code 422)
      */
-    @ApiOperation(value = "", nickname = "createAssetVersion", notes = "Creates a new version of the asset, with the current content of the asset.  Responds with `404` if the asset is not found, and with `422` if the request body is invalid.", authorizations = {
+    @ApiOperation(value = "Create an asset version", nickname = "createAssetVersion", notes = "Creates a new version of the asset, with the current content of the asset. The version name must be unique for the asset.  Requires access rights to the asset itself, to be able to create a new version.  Possible response codes: - `404`: The asset was not found. - `422`: The HTTP request body is invalid. Detailed explanation can be found in the response body. - `201`: The version was created successfully.", authorizations = {
+        @Authorization(value = "ApiKey"),
         @Authorization(value = "JWT")
     }, tags={ "Version", })
     @ApiResponses(value = { 
@@ -59,22 +58,25 @@ public interface VersionApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Void> createAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) VersionRequest versionRequest) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    default Mono<ResponseEntity<Void>> createAssetVersion(@ApiParam(value = "The ID of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = ""  )  @Valid @RequestBody(required = false) Mono<VersionRequest> versionRequest, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        return result.then(Mono.empty());
 
     }
 
 
     /**
-     * DELETE /assets/{assetId}/versions/{name}
+     * DELETE /assets/{assetId}/versions/{name} : Delete an asset version
      * Deletes the sepcified version of the asset.  Responds with &#x60;404&#x60; if the asset or the version is not found. Details about the failure in the &#x60;message&#x60; field of the error response.
      *
-     * @param assetId The unique identifier of the asset. (required)
-     * @param name The name of an asset version. (required)
+     * @param assetId The ID of the asset. (required)
+     * @param name The name of the asset version. (required)
      * @return No Content (status code 204)
      *         or Not Found (status code 404)
      */
-    @ApiOperation(value = "", nickname = "deleteAssetVersion", notes = "Deletes the sepcified version of the asset.  Responds with `404` if the asset or the version is not found. Details about the failure in the `message` field of the error response.", authorizations = {
+    @ApiOperation(value = "Delete an asset version", nickname = "deleteAssetVersion", notes = "Deletes the sepcified version of the asset.  Responds with `404` if the asset or the version is not found. Details about the failure in the `message` field of the error response.", authorizations = {
+        @Authorization(value = "ApiKey"),
         @Authorization(value = "JWT")
     }, tags={ "Version", })
     @ApiResponses(value = { 
@@ -83,69 +85,77 @@ public interface VersionApi {
     @RequestMapping(value = "/assets/{assetId}/versions/{name}",
         produces = { "application/json" }, 
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    default Mono<ResponseEntity<Void>> deleteAssetVersion(@ApiParam(value = "The ID of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of the asset version.",required=true) @PathVariable("name") String name, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        return result.then(Mono.empty());
 
     }
 
 
     /**
-     * GET /assets/{assetId}/versions/{name} : A version of an asset
-     * Returns the required version of the asset.  Responds with &#x60;404&#x60; if the asset or the version is not found. Details about the failure in the &#x60;message&#x60; field of the response object.
+     * GET /assets/{assetId}/versions/{name} : Get a version of an asset
+     * Returns the required version of the asset.  Requires access rights to the asset itself, to be able to retrieve the version.  Possible response codes: - &#x60;404&#x60;: The asset, or the asset version was not found. - &#x60;200&#x60;: The version was returned in the HTTP body.
      *
-     * @param assetId The unique identifier of the asset. (required)
-     * @param name The name of an asset version. (required)
+     * @param assetId The ID of the asset. (required)
+     * @param name The name of the asset version. (required)
      * @return OK (status code 200)
      *         or Not Found (status code 404)
      */
-    @ApiOperation(value = "A version of an asset", nickname = "getAssetVersion", notes = "Returns the required version of the asset.  Responds with `404` if the asset or the version is not found. Details about the failure in the `message` field of the response object.", response = VersionResponse.class, tags={ "Version", })
+    @ApiOperation(value = "Get a version of an asset", nickname = "getAssetVersion", notes = "Returns the required version of the asset.  Requires access rights to the asset itself, to be able to retrieve the version.  Possible response codes: - `404`: The asset, or the asset version was not found. - `200`: The version was returned in the HTTP body.", response = VersionResponse.class, authorizations = {
+        @Authorization(value = "ApiKey"),
+        @Authorization(value = "JWT")
+    }, tags={ "Version", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = VersionResponse.class),
         @ApiResponse(code = 404, message = "Not Found", response = ErrorResponse.class) })
     @RequestMapping(value = "/assets/{assetId}/versions/{name}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<VersionResponse> getAssetVersion(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of an asset version.",required=true) @PathVariable("name") String name) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
+    default Mono<ResponseEntity<VersionResponse>> getAssetVersion(@ApiParam(value = "The ID of the asset.",required=true) @PathVariable("assetId") String assetId,@ApiParam(value = "The name of the asset version.",required=true) @PathVariable("name") String name, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        for (MediaType mediaType : exchange.getRequest().getHeaders().getAccept()) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 0, \"name\" : \"name\", \"lastModified\" : \"2000-01-23T04:56:07.000+00:00\" }, { \"size\" : 0, \"name\" : \"name\", \"lastModified\" : \"2000-01-23T04:56:07.000+00:00\" } ], \"assetId\" : \"assetId\", \"name\" : \"name\" }";
+                result = ApiUtil.getExampleResponse(exchange, exampleString);
+                break;
             }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
+        return result.then(Mono.empty());
 
     }
 
 
     /**
      * GET /assets/{assetId}/versions : List the versions of an asset
-     * Lists all the available versions of the asset.  Responds with &#x60;404&#x60; if the asset is not found.
+     * Lists all the available versions of the asset.  Requires access rights to the asset itself, to be able to retrieve the version.  Possible response codes: - &#x60;404&#x60;: The asset was not found. - &#x60;200&#x60;: The version was returned in the HTTP body.
      *
-     * @param assetId The unique identifier of the asset. (required)
+     * @param assetId The ID of the asset. (required)
      * @return OK (status code 200)
      *         or Not Found (status code 404)
      */
-    @ApiOperation(value = "List the versions of an asset", nickname = "getAssetVersions", notes = "Lists all the available versions of the asset.  Responds with `404` if the asset is not found.", response = VersionResponse.class, responseContainer = "List", tags={ "Version", })
+    @ApiOperation(value = "List the versions of an asset", nickname = "getAssetVersions", notes = "Lists all the available versions of the asset.  Requires access rights to the asset itself, to be able to retrieve the version.  Possible response codes: - `404`: The asset was not found. - `200`: The version was returned in the HTTP body.", response = VersionResponse.class, responseContainer = "List", authorizations = {
+        @Authorization(value = "ApiKey"),
+        @Authorization(value = "JWT")
+    }, tags={ "Version", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = VersionResponse.class, responseContainer = "List"),
         @ApiResponse(code = 404, message = "Not Found", response = ErrorResponse.class) })
     @RequestMapping(value = "/assets/{assetId}/versions",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<VersionResponse>> getAssetVersions(@ApiParam(value = "The unique identifier of the asset.",required=true) @PathVariable("assetId") String assetId) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" }, { \"size\" : 176, \"name\" : \"users.csv\", \"id\" : \"id\", \"lastModified\" : \"2020-12-02T12:51:33Z\" } ], \"assetId\" : \"assetId\", \"name\" : \"1.0.0\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
+    default Mono<ResponseEntity<Flux<VersionResponse>>> getAssetVersions(@ApiParam(value = "The ID of the asset.",required=true) @PathVariable("assetId") String assetId, ServerWebExchange exchange) {
+        Mono<Void> result = Mono.empty();
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_IMPLEMENTED);
+        for (MediaType mediaType : exchange.getRequest().getHeaders().getAccept()) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                String exampleString = "{ \"createdAt\" : \"2000-01-23T04:56:07.000+00:00\", \"contents\" : [ { \"size\" : 0, \"name\" : \"name\", \"lastModified\" : \"2000-01-23T04:56:07.000+00:00\" }, { \"size\" : 0, \"name\" : \"name\", \"lastModified\" : \"2000-01-23T04:56:07.000+00:00\" } ], \"assetId\" : \"assetId\", \"name\" : \"name\" }";
+                result = ApiUtil.getExampleResponse(exchange, exampleString);
+                break;
             }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        }
+        return result.then(Mono.empty());
 
     }
 
