@@ -11,9 +11,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * 
+ * VersionRequest
  */
-@ApiModel(description = "")
 
 public class VersionRequest  implements Serializable {
   private static final long serialVersionUID = 1L;

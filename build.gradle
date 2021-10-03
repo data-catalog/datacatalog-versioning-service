@@ -74,7 +74,7 @@ jacocoTestReport {
 }
 
 openApiGenerate {
-	inputSpec = "$rootDir/src/main/resources/api/VersioningApi.yaml".toString()
+	inputSpec = "$rootDir/src/main/resources/api/dist.yaml".toString()
 	configFile = "$rootDir/openapi-generator-config.json".toString()
 	ignoreFileOverride = "$rootDir/.openapi-generator-ignore".toString()
 	outputDir = "$rootDir".toString()
@@ -87,4 +87,5 @@ openApiGenerate {
 
 bootRun {
 	systemProperties = System.properties
+	jvmArgs = ["-Djdk.tls.client.protocols=TLSv1.2"]
 }

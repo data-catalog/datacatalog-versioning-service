@@ -12,9 +12,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * 
+ * ErrorResponse
  */
-@ApiModel(description = "")
 
 public class ErrorResponse  implements Serializable {
   private static final long serialVersionUID = 1L;
